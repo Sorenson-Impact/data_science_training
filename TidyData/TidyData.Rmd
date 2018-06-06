@@ -157,7 +157,7 @@ include_graphics("http://r4ds.had.co.nz/images/tidy-9.png")
 ```
 
 
-## Observation is spread across 
+## Observations in multiple rows 
 
 ```{r}
 kable(table2)
@@ -176,7 +176,6 @@ spread(table2, key = type, value = count) %>% kable()
 ```{r, out.width = "100%", fig.align="center"}
 include_graphics("http://r4ds.had.co.nz/images/tidy-8.png")
 ```
-
 
 
 ```{r, include=FALSE}
@@ -213,7 +212,18 @@ pre_post <- tribble(
 ```
 
 
+# Relational Data
+
+
+## Important Tidy Rule
+
+If you have multiple tables, they should include a column in the table that allows them to be linked.
+
+
+## Weather 
+
 ```{r}
-gather(pre_post, test1:test2, key = "test", value = "score")
+library(nycflights13)
+kable(airlines)
 ```
 
