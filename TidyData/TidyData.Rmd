@@ -299,12 +299,6 @@ pre_post <- tribble(
 )
 
 kable(pre_post)
-
-tidy <- gather(pre_post, test1:test2, key = "test", value = "score")
-
-avgs <- tidy %>% group_by(id) %>% summarise(avg = mean(score))
-
-untidy <- tidy %>% left_join(avgs)
 ```
 
 
