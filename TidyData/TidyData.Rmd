@@ -1,7 +1,7 @@
 ---
 title: "Tidy Data"
 author: "Sorenson Impact Center Data Science Team"
-date: "1/1/1901"
+date: "June 2018"
 output: 
   ioslides_presentation:
     logo: template/SI_mobius_logo_large_white.png
@@ -239,7 +239,7 @@ kable(head(flights2))
 
 ## Flights w/ Airlines 
 
-```{r, include=TRUE}
+```{r, echo=TRUE}
 flights2 %>% 
   left_join(airlines, by = "carrier") %>% 
   head() %>% 
@@ -247,9 +247,25 @@ flights2 %>%
 ```
 
 
+## Left Join
+
+A left join keeps all observations in x
+
+```{r, out.width = "100%", fig.align="center"}
+include_graphics("http://r4ds.had.co.nz/diagrams/join-outer.png")
+```
+
+
+## Mutating Join Types
+
+```{r, out.width = "100%", fig.align="center"}
+include_graphics("http://r4ds.had.co.nz/diagrams/join-venn.png")
+```
+
+
 ## Exercise Two
 
-Make this Tidy, then make it untidy with a join!!
+Make this Tidy, then make it untidy with a join: add the average score on a long dataset.
 ```{r}
 # Data                                                                         #
 # - pre_post                                                                   #
@@ -283,11 +299,28 @@ pre_post <- tribble(
 )
 
 kable(pre_post)
+
+tidy <- gather(pre_post, test1:test2, key = "test", value = "score")
+
+avgs <- tidy %>% group_by(id) %>% summarise(avg = mean(score))
+
+untidy <- tidy %>% left_join(avgs)
 ```
 
 
-## Join Types
+## Filtering Joins
+
+semi_join(x, y) keeps all observations in x that have a match in y
 
 ```{r, out.width = "100%", fig.align="center"}
-include_graphics("http://r4ds.had.co.nz/diagrams/join-venn.png")
+include_graphics("http://r4ds.had.co.nz/diagrams/join-semi.png")
+```
+
+
+## Filtering Joins
+
+anti_join(x, y) drops all observations in x that have a match in y
+
+```{r, out.width = "100%", fig.align="center"}
+include_graphics("http://r4ds.had.co.nz/diagrams/join-anti.png")
 ```
