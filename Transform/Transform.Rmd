@@ -253,7 +253,7 @@ flights %>%
   
 ```
 
-## ifelse() or case_when()
+## if_else() or case_when()
 
 - Use in combination with mutate 
 
