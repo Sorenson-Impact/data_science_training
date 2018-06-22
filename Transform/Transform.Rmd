@@ -1,0 +1,287 @@
+---
+title: "Transform Data"
+author: "Gwendolyn"
+date: "June 22, 2018"
+output: 
+  ioslides_presentation:
+    logo: template/SI_mobius_logo_large_white.png
+    template: template/SI_ioslides.html
+    css: template/SI_styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(sorensonimpact)
+library(nycflights13)
+si_ggplot_theme_update()
+
+flights <- flights
+```
+
+
+<!-- Go to: http://rmarkdown.rstudio.com/ioslides_presentation_format.html#overview for info on how to customize individual slides (centering, changing colors, etc).  I can also create custom css if we want a couple versions of slide templates that can be called from within this document. - Jon -->
+
+<!-- The following is script for the footer. It must remain before the first slide: -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('label', 'Draft -- Do not circulate');
+  })
+</script>
+<style>
+  footer:after {
+    font-size: 12pt;
+    content: attr(label);
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 60px;
+    right: 0;
+    text-align:left;
+    bottom: 20px;
+    line-height: 1.9;
+    display: block;
+  }
+</style>
+<!-- End Footer -->
+
+## Transform Data
+
+- Data comes in a variety of formats
+
+- Data is generated in different ways: manually, automatically, etc
+
+- Data sources are heterogeneous, which creates inconsistent and inaccurate data
+
+- Data never comes to you in the format you want
+
+## Tibble
+
+```{r}
+
+flights
+
+```
+
+## Data Types
+
+- int is integers
+
+- dbl is doubles, or real numbers
+
+- chr is character vectors, or strings
+
+- dttm is date-times
+
+- lgl is logical, vectors containing TRUE or FALSE
+
+- fctr is factors
+
+- date is dates
+
+## dplyr %in% Tidyverse
+
+- fitler()
+
+- arrange()
+
+- select()
+
+- mutate()
+
+- summarise()
+
+## Filter rows with filter()
+
+```{r}
+
+flights %>% 
+  filter(month==1, day==1)
+
+
+```
+
+## How to Save Results
+
+- New dataframe/tibble new <- flights
+
+- Same dataframe/tibble flights <- flights
+
+
+```{r, include=FALSE}
+
+flights %>% 
+  count()
+
+decflights <- flights %>% 
+  filter()
+
+```
+
+## Logical operators
+
+```{r, out.width = "100%", fig.align="center"}
+include_graphics("http://r4ds.had.co.nz/diagrams/transform-logical.png")
+```
+
+## Example
+- Filter for December or October
+
+- Filter for June, July, and August
+
+```{r, echo=FALSE}
+
+flights %>% 
+  filter()
+
+flights %>% 
+  filter()
+
+```
+
+## x %in% y
+
+- Filter for six months of the year
+
+- Use a vector c(1, 2, 3, 4, 5, 6)
+
+```{r, echo=FALSE}
+
+firsthalf <- flights %>% 
+  filter(month %in% c(1, 2, 3, 4, 5, 6))
+
+## TODO
+
+secondhalf <- flights %>% 
+  filter()
+
+firstfifteendays <- flights %>% 
+  filter()
+
+```
+
+
+## NAs are Annoying
+
+- is.na(x)
+
+- !is.na(x)
+
+- Exercises
+
+```{r, include=FALSE}
+
+flights %>% 
+  filter(is.na(day))
+
+## Filter out NAs
+flights %>% 
+  filter()
+
+
+```
+
+## Arrange rows with arrange()
+
+```{r}
+flights %>% 
+  arrange(year, month, day)
+
+```
+
+## Descending
+
+```{r}
+
+flights %>% 
+  arrange(desc(day))
+
+```
+
+## Select columns with select()
+
+```{r}
+flights %>% 
+  select(month, day, dep_delay)
+
+```
+
+## Take columns out
+
+```{r}
+
+flights %>% 
+  select(-year, -month, -day, -(11:19))
+
+```
+
+## Rename variables using rename()
+
+```{r}
+
+flights %>% 
+  rename(YR = year)
+
+```
+
+## Add variables with mutate()
+
+- The possibilities are potentially infinite
+
+- You have the power!
+
+```{r, include=FALSE}
+
+saveifyouwant <- flights %>% 
+  mutate(speed = distance / air_time * 60, 
+         check_dep_delay = dep_time - sched_dep_time, 
+         hours = air_time / 60)
+
+## use summarise and mutate together
+
+flights %>% 
+  group_by(carrier) %>% 
+  summarise(count = n()) %>% 
+  mutate(perc = (count/sum(count))*100)
+
+## use transmute
+
+flights %>% 
+  transmute(dep_time, hour = dep_time %/% 100, 
+            minute = dep_time %% 100)
+  
+```
+
+## if_else() or case_when()
+
+- Use in combination with mutate 
+
+```{r}
+
+flights %>% 
+  mutate(late = if_else(dep_delay>0, "Late", 
+                if_else(dep_delay<0, "Early", 
+                if_else(dep_delay==0, "On time", "NA")))) 
+
+flights %>% 
+  mutate(late = case_when(dep_delay>0 ~ "Late", 
+                          dep_delay<0 ~ "Early", 
+                          dep_delay==0 ~ "On time")) 
+
+
+```
+
+## group_by() and summarise()
+
+- Create aggregate data 
+- Create tables
+- Find mean, median, sd, min, max, etc
+
+
+```{r}
+
+```
+
+
+
