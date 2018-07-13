@@ -96,8 +96,8 @@ flights
 
 ```{r}
 
-flights %>% 
-  filter(month==1, day==1)
+christmasflights <- flights %>% 
+  filter(month==12, day==25) 
 
 
 ```
@@ -112,11 +112,11 @@ flights %>%
 ```{r, include=FALSE}
 
 flights %>% 
-  count()
+  count(carrier)
 
-decflights <- flights %>% 
-  filter()
-
+ flights %>% 
+   filter(xor(carrier=="9E", month==12))
+  
 ```
 
 ## Logical operators
@@ -148,8 +148,9 @@ flights %>%
 
 ```{r, echo=FALSE}
 
-firsthalf <- flights %>% 
-  filter(month %in% c(1, 2, 3, 4, 5, 6))
+flights %>% 
+  filter(month %in% c(1:6)) %>% 
+  count(month)
 
 ## TODO
 
@@ -173,11 +174,14 @@ firstfifteendays <- flights %>%
 ```{r, include=FALSE}
 
 flights %>% 
+  filter(!is.na(day))
+
+flights %>% 
   filter(is.na(day))
 
 ## Filter out NAs
-flights %>% 
-  filter()
+
+  
 
 
 ```
@@ -186,7 +190,7 @@ flights %>%
 
 ```{r}
 flights %>% 
-  arrange(year, month, day)
+  arrange(month, day, sched_dep_time)
 
 ```
 
@@ -197,13 +201,18 @@ flights %>%
 flights %>% 
   arrange(desc(day))
 
+flights %>% 
+  arrange()
+
 ```
 
 ## Select columns with select()
 
 ```{r}
 flights %>% 
-  select(month, day, dep_delay)
+  select(1:3) 
+
+names(flights)
 
 ```
 
@@ -212,13 +221,18 @@ flights %>%
 ```{r}
 
 flights %>% 
-  select(-year, -month, -day, -(11:19))
+  select(-(2:19))
 
 ```
 
 ## Rename variables using rename()
 
 ```{r}
+
+library(janitor)
+
+flights <- flights %>% 
+  clean_names()
 
 flights %>% 
   rename(YR = year)
@@ -235,8 +249,17 @@ flights %>%
 
 saveifyouwant <- flights %>% 
   mutate(speed = distance / air_time * 60, 
-         check_dep_delay = dep_time - sched_dep_time, 
+         check_dep_delay = dep_time - sched_dep_time,
          hours = air_time / 60)
+
+summary(saveifyouwant)
+
+saveifyouwant %>% 
+  summarise(meanspeed = mean(speed, na.rm = TRUE))
+
+, 
+         
+         )
 
 ## use summarise and mutate together
 
@@ -259,15 +282,31 @@ flights %>%
 
 ```{r}
 
-flights %>% 
+flightsnew <- flights %>% 
   mutate(late = if_else(dep_delay>0, "Late", 
                 if_else(dep_delay<0, "Early", 
                 if_else(dep_delay==0, "On time", "NA")))) 
+
+
+
+flightsnew %>% 
+  count(late)
 
 flights %>% 
   mutate(late = case_when(dep_delay>0 ~ "Late", 
                           dep_delay<0 ~ "Early", 
                           dep_delay==0 ~ "On time")) 
+
+flightsnew <- flights %>% 
+  mutate(late = case_when(dep_delay>0  ~ "Late", 
+                          dep_delay<0 ~ as.character(dep_delay), 
+                          dep_delay==0 ~ "On time", 
+                          TRUE ~ "Doesn't Exist")) 
+
+flightsnew <- flights %>% 
+  mutate(earlynums = case_when(dep_delay<0 ~ dep_delay))
+
+summary(flightsnew$earlynums)
 
 
 ```
@@ -280,6 +319,15 @@ flights %>%
 
 
 ```{r}
+
+flights %>% 
+  group_by(month) %>% 
+  summarise(meandelay = mean(dep_delay, na.rm = TRUE), 
+            meanarrdelay = mean(arr_delay, na.rm = TRUE), 
+            sddepdelay = sd(dep_delay, na.rm = TRUE)) %>% 
+  arrange(desc(meandelay))
+
+
 
 ```
 
