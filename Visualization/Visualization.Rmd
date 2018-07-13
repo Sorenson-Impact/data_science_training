@@ -338,26 +338,20 @@ If you prefer to not facet in the rows or columns dimension, use a `.` instead o
 
 How are these two plots similar? 
 
-<div class="column-2-left">
-```{r echo = FALSE, message = F, fig.width = 4}
+```{r echo = FALSE}
+ggarrange(ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)),
 ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy))
+  geom_smooth(mapping = aes(x = displ, y = hwy), method = 'loess'),
+ncol = 2)
 ```
-</div>
-<div class="column-2-right">
-```{r echo = FALSE, message = F, fig.width = 4}
-ggplot(data = mpg) + 
-  geom_smooth(mapping = aes(x = displ, y = hwy))
-```
-</div>
-
 ##
 
 Both plots contain the same x variable, the same y variable, and both describe the same data. But the plots are not identical. Each plot uses a different visual object to represent the data. In ggplot2 syntax, we say that they use different __geoms__.
 
-A __geom__ is the geometrical object that a plot uses to represent data. People often describe plots by the type of geom that the plot uses. For example, bar charts use bar geoms, line charts use line geoms, boxplots use boxplot geoms, and so on. Scatterplots break the trend; they use the point geom. As we see above, you can use different geoms to plot the same data. The plot on the left uses the point geom, and the plot on the right uses the smooth geom, a smooth line fitted to the data. 
-
 ##
+
+A __geom__ is the geometrical object that a plot uses to represent data. People often describe plots by the type of geom that the plot uses. For example, bar charts use bar geoms, line charts use line geoms, boxplots use boxplot geoms, and so on. Scatterplots break the trend; they use the point geom. As we see above, you can use different geoms to plot the same data. The plot on the left uses the point geom, and the plot on the right uses the smooth geom, a smooth line fitted to the data. 
 
 To change the geom in your plot, change the geom function that you add to `ggplot()`. For instance, to make the plots above, you can use this code:
 
@@ -416,27 +410,21 @@ ggplot(data = mpg) +
     mapping = aes(x = displ, y = hwy, color = drv),
     show.legend = FALSE)
 ```
-<div class="column-3-left">
-```{r, fig.height = 3.75, fig.width = 2.5, echo = F, message = FALSE}
+
+```{r echo = F, warning = F, message = F, fig.width = 8}
+ggarrange(ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy)),
+
 ggplot(data = mpg) +
-  geom_smooth(mapping = aes(x = displ, y = hwy))
-```
-</div>
-<div class="column-3-center">
-```{r, fig.height = 3.75, fig.width = 2.5, echo = F, message = FALSE}
-ggplot(data = mpg) +
-  geom_smooth(mapping = aes(x = displ, y = hwy, group = drv))
-```
-</div>
-<div class="column-3-right">
-```{r, fig.height = 3.75, fig.width = 2.5, echo = F, message = FALSE}
+  geom_smooth(mapping = aes(x = displ, y = hwy, group = drv)),
+
 ggplot(data = mpg) +
   geom_smooth(
     mapping = aes(x = displ, y = hwy, color = drv),
-    show.legend = FALSE
-  )
+    show.legend = FALSE),
+ncol = 3)
 ```
-</div>
+
 
 ##
 
@@ -576,6 +564,40 @@ knitr::include_graphics("http://r4ds.had.co.nz/images/visualization-stat-bar.png
 ##
 
 You can learn which stat a geom uses by inspecting the default value for the `stat` argument. For example, `?geom_bar` shows that the default value for `stat` is "count", which means that `geom_bar()` uses `stat_count()`. `stat_count()` is documented on the same page as `geom_bar()`, and if you scroll down you can find a section called "Computed variables". That describes how it computes two new variables: `count` and `prop`.
+
+##
+
+Often it is preferable to do statistical transformations before creating your plot.  In essence, you want to create a table first that is in the form you want it, and then you want to visualize it.  This is done using `dplyr`'s summary functions such as `summarize()` or `count()`.
+
+##
+
+The earlier chart can be created this way.  First create a table containing the data you want to visualize (counts of each cut):
+
+```{r}
+cut_counts <- diamonds %>% 
+  count(cut)
+
+kable(cut_counts)
+```
+
+##
+
+Then plot that data:
+```{r}
+ggplot(data = cut_counts) +
+    geom_col(mapping = aes(x = cut, y = n))
+```
+
+##
+
+This seems cumbersome the way that we've done it for illustrative purposes, but actually it can all be done in a single pipe:
+
+```{r}
+diamonds %>% 
+  count(cut) %>% 
+  ggplot(aes(x = cut, y = n)) + 
+    geom_col()
+```
 
 <!-- ## -->
 
