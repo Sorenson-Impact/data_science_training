@@ -1,0 +1,266 @@
+---
+title: "Iteration"
+author: "Daniel"
+date: "July, 2018"
+output:
+  ioslides_presentation:
+    css: template/SI_styles.css
+    logo: template/SI_mobius_logo_large_white.png
+    template: template/SI_ioslides.html
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(sorensonimpact)
+library(nycflights13)
+si_ggplot_theme_update()
+
+flights <- flights
+```
+
+
+<!-- Go to: http://rmarkdown.rstudio.com/ioslides_presentation_format.html#overview for info on how to customize individual slides (centering, changing colors, etc).  I can also create custom css if we want a couple versions of slide templates that can be called from within this document. - Jon -->
+
+<!-- The following is script for the footer. It must remain before the first slide: -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('label', 'Draft -- Do not circulate');
+  })
+</script>
+<style>
+  footer:after {
+    font-size: 12pt;
+    content: attr(label);
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 60px;
+    right: 0;
+    text-align:left;
+    bottom: 20px;
+    line-height: 1.9;
+    display: block;
+  }
+</style>
+<!-- End Footer -->
+
+## Iteration
+
+- One of the most valuable tools of computing
+- Imperative vs. Functional
+
+## Tibble
+
+```{r}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+) 
+
+kable(df)
+
+```
+
+
+## The Hard Way
+
+```{r, echo=T}
+median(df$a)
+median(df$b)
+median(df$c)
+median(df$d)
+```
+
+
+## The For Loop Way
+
+```{r, echo=T}
+output <- vector("double", ncol(df))  # 1. output
+
+for (i in seq_along(df)) {            # 2. sequence
+  output[[i]] <- median(df[[i]])      # 3. body
+}
+
+output
+```
+
+
+## The For Loop Way, Simplified
+
+```{r, echo=T}
+
+for (i in 1:5) {
+  print(i)      
+}
+
+```
+
+
+## The For Loop Way, Simplified
+
+```{r, echo=T}
+list_of_numbers <- c(1:5)
+
+for (number in list_of_numbers) {
+  print(number + 1)      
+}
+
+```
+
+
+## The Nested For Loop
+
+```{r, echo=T}
+
+for (i in 1:5) {
+  for (x in 1:5) {  
+    print(i * x)
+  }
+}
+
+```
+
+
+## Exercise 1
+
+- Print 1 - 100
+
+
+## FizzBuzz
+
+- Make a character vector of  length 100
+- When the number is a multiple of 3 add “Fizz” instead of the number
+- When the number is a multiple of 5 add “Buzz instead of the number
+- When the number is a multiple of both add “FizzBuzz”
+
+
+## Two Clues (But don't look down)
+
+```{r, echo=T}
+output <- vector("double", ncol(df))  # 1. output
+
+for (i in seq_along(df)) {            # 2. sequence
+  output[[i]] <- median(df[[i]])      # 3. body
+}
+
+# Modulo operation
+15 %% 3 == 0
+
+```
+
+
+## One solution
+
+```{r, echo=T}
+output <- vector("character", 100)
+
+for (i in seq_along(output)) {
+  output[[i]] <- if_else(i %% 3 == 0 & i %% 5 == 0, "FizzBuzz",
+                         if_else(i %% 3 == 0, "Fizz",
+                                 if_else(i %% 5 == 0, "Buzz", as.character(i))))
+}
+
+output
+```
+
+
+## Case When Solution
+
+```{r, echo=T}
+output <- vector("character", 100)
+
+for (i in seq_along(output)) {
+  
+  output[[i]] <- case_when(i %% 3 == 0 & i %% 5 == 0 ~ "FizzBuzz",
+                           i %% 3 == 0 ~ "Fizz",
+                           i %% 5 == 0 ~ "Buzz",
+                           TRUE ~ as.character(i))
+}
+
+output
+```
+
+
+## While loop
+
+```{r, echo=T}
+i <- 1
+j <- 5
+
+while (i <= j) {
+  # body
+  i <- i + 1 
+}
+
+i
+```
+
+
+## Simulation
+
+```{r, echo=T}
+flip <- function() sample(c("T", "H"), 1)
+
+flips <- 0
+nheads <- 0
+
+while (nheads < 3) {
+  if (flip() == "H") {
+    nheads <- nheads + 1
+  } else {
+    nheads <- 0
+  }
+  flips <- flips + 1
+}
+flips
+```
+
+
+## Motivating Examples
+
+https://daniel-hadley.shinyapps.io/Recidivism_App/
+
+https://github.com/DanielHadley/538_riddler
+
+
+## Motivating Examples
+
+```{r, echo=T, eval=F}
+districts <- c("Nestucca", "Astoria", "Neah-Kah-Nie", "Seaside", "Tillamook", "Jewell", "Knappa", "Warrenton")
+
+for (d in districts) {
+  small_d_district <- d
+  try(rmarkdown::render("~/Github/ADP_Oregon/2018May_Presentation.Rmd",
+                        output_file = paste0(d, "_2018May_Presentation.html"), 
+                        output_dir = "~/Github/ADP_Oregon/May_Reports/"))
+  }
+```
+
+
+## Map
+
+```{r, echo=T}
+df %>% map(mean)
+```
+
+
+## Motivating Map
+
+```{r, echo=T, eval=F}
+sheets <- readxl::excel_sheets("~/NWORPSFeasibility_Astoria.xlsx")
+
+clean_NWORPS <- function(x){
+  test <- read_excel("~/NWORPSFeasibility_Astoria.xlsx", sheet = x) %>% 
+    otherstuff()
+}
+
+NWORPS <- sheets %>% 
+    map(clean_NWORPS) %>% 
+  reduce(bind_rows)
+```
+
