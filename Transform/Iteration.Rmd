@@ -293,3 +293,20 @@ sum.of.squares <- function(x,y) {
 
 - Make a FizzBuzz function
 - Map it over a vector between 1 and 100
+
+
+## my answer
+
+```{r, echo=T}
+fizzy_mc_buzz_maker <- function(i) {
+  
+  case_when(i %% 3 == 0 & i %% 5 == 0 ~ "FizzBuzz",
+                           i %% 3 == 0 ~ "Fizz",
+                           i %% 5 == 0 ~ "Buzz",
+                           TRUE ~ as.character(i))
+}
+
+1:100 %>% 
+  map(fizzy_mc_buzz_maker)
+```
+
