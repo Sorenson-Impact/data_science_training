@@ -126,6 +126,11 @@ for (i in 1:5) {
 ```
 
 
+## For Loop Tips
+
+- Start by assigning "i" and testing
+- with long loops, print(i) so you know where you are
+
 ## Exercise 1
 
 - Print 1 - 100
@@ -154,7 +159,7 @@ for (i in seq_along(df)) {            # 2. sequence
 ```
 
 
-## One solution
+## if_else solution
 
 ```{r, echo=T}
 output <- vector("character", 100)
@@ -264,3 +269,27 @@ NWORPS <- sheets %>%
   reduce(bind_rows)
 ```
 
+
+## Function refresher
+
+1.  You need to pick a __name__ for the function.
+
+1.  You list the inputs, or __arguments__, to the function inside `function`.
+
+1.  You place the code you have developed in __body__ of the function, a 
+    `{` block that immediately follows `function(...)`.
+ 
+    
+## Function refresher
+
+```{r, echo=T}
+sum.of.squares <- function(x,y) {
+  x^2 + y^2
+}
+```
+
+
+## Final Exercise
+
+- Make a FizzBuzz function
+- Map it over a vector between 1 and 100
