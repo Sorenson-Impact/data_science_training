@@ -116,6 +116,7 @@ Check out:
 - Several options. We will use Netlify
 - Get a Netlify account
 - Give Netlify your repo
+- Change Hugo Version to at least 0.38
 
 ## 
 
