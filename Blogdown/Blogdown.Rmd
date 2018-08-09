@@ -1,0 +1,134 @@
+---
+title: "Create a Website Using Blogdown"
+author: "Sorenson Impact Center Data Science Team"
+date: "1/1/1901"
+output: 
+  ioslides_presentation:
+    logo: template/SI_mobius_logo_large_white.png
+    template: template/SI_ioslides.html
+    css: template/SI_styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(sorensonimpact)
+library(tidyverse)
+library(knitr)
+si_ggplot_theme_update()
+```
+
+<!-- Go to: http://rmarkdown.rstudio.com/ioslides_presentation_format.html#overview for info on how to customize individual slides (centering, changing colors, etc).  I can also create custom css if we want a couple versions of slide templates that can be called from within this document. - Jon -->
+
+<!-- The following is script for the footer. It must remain before the first slide: -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('slide:not(.title-slide, .backdrop, .segue)').append('<footer></footer>');    
+    $('footer').attr('label', 'Draft -- Do not circulate');
+  })
+</script>
+<style>
+  footer:after {
+    font-size: 12pt;
+    content: attr(label);
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 60px;
+    right: 0;
+    text-align:left;
+    bottom: 20px;
+    line-height: 1.9;
+    display: block;
+  }
+</style>
+<!-- End Footer -->
+
+## Intro to Blogdown: Yihui's Genius
+
+- https://bookdown.org/yihui/blogdown/
+- Build Your Site 
+- Customize
+- Deploy
+
+## Install Packaages
+
+First, you need to install homebrew if you are a Mac user. Install it by pasting the following into the terminal: 
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Check out what homebrew is actually doing on their website: https://brew.sh/
+
+## Install Blogdown
+
+```{r, echo = TRUE}
+# install.packages("blogdown")
+# blogdown::install_hugo()
+# library(blogdown)
+
+```
+
+## Choose Your Hugo Theme
+
+https://themes.gohugo.io/
+
+Check out: 
+
+- www.gwendolynr.com
+- www.danielphadley.com
+
+## New Site
+
+- Build your repo in Github
+- Open your repo
+- File -> New Project -> put in your theme
+- OR new_site(theme = "gcushen/hugo-academic")
+
+## Set your Config 
+
+- config.toml
+- About
+- content/
+
+## Serve Site
+
+- serve_site() or addin
+- Theoretically updates automatically
+- Don't run build_site()
+
+## New Post
+
+- new_post() or addin
+- Be careful that the default may be to md and not Rmd
+
+## Hugo is Hard
+
+- If serve_site() stops working, you have an error
+- Go to command line, cd to repo, then just type: hugo
+- This will make Hugo build your site, and if it can't, it will send you an error
+
+## Chapter 2 is Hugo
+
+- How to customize your site
+- Templates, customize layouts, etc
+
+## Deploy Site
+
+- Several options. We will use Netlify
+- Get a Netlify account
+- Give Netlify your repo
+
+## 
+
+```{r, out.width = "100%", fig.align="center"}
+include_graphics("https://bookdown.org/yihui/blogdown/images/netlify-settings.png")
+```
+
+## Why Netlify
+
+Netlify is the only solution in this chapter that does not require you to prebuild your website. You only need to update the source files, push them to GitHub, and Netlify will build the website for you.
+
+## Domain Change
+
+- You don’t have to keep the *.netlify.com domain 
+- See Appendix C for more information
+- I bought my domain from Google
