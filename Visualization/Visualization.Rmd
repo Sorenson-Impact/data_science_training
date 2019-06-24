@@ -18,6 +18,7 @@ knitr::opts_chunk$set(cache = T)
 library(siverse)
 library(tidyverse)
 require(ggpubr)
+library(maps)
 #si_ggplot_theme_update()
 ```
 
