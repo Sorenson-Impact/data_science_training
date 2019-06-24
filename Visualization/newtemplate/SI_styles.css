@@ -64,6 +64,7 @@ aside.gdbar img{
   position: absolute;
   right:0;
   margin: 8px 15px;
+  vertical-align: center;
   
 }
 
@@ -93,9 +94,9 @@ aside.gdbar {
 
 /* This is for the content slides */
 slides > slide:not(.nobackground):before {
-  width: 60px;
-  height: 60px;
-  background-size: 60px 60px;
+  width: 0;
+  height: 0;
+  
 }
 
 /* These are div styles for multi-column layouts */
