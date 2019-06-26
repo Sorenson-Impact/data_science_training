@@ -15,11 +15,7 @@ slides > slide.dark {
   opacity: 1;
 }
 
-.title-slide hgroup {
-  position: absolute;
-  top: 50%;
-  right: 50%;
-}
+
 
 .title-slide hgroup h2 {
   background: white;
@@ -28,8 +24,8 @@ slides > slide.dark {
 
 .segue hgroup {
   position: absolute;
-  bottom: 50%;
-  right: 35%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .segue h2 {
@@ -43,6 +39,10 @@ slides > slide.dark {
   padding: 5px;
   text-align: center;
   background: #F4D164;
+}
+
+.segue h3{
+  color: white;
 }
 
 h2 {

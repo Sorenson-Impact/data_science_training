@@ -18,6 +18,7 @@ knitr::opts_chunk$set(cache = T)
 library(siverse)
 library(tidyverse)
 library(ggpubr)
+library(plotly)
 
 ```
 
@@ -52,13 +53,14 @@ library(ggpubr)
 - Aesthetic Mappings
 - Facets
 - Geometric Objects
+- Coordinate Systems
 - Other visualizations: plotly
 - What visualization to use?
 
-For In Class Exercises: load a .R File or .Rmd file. Load necessary libraries, mpg dataset and work along
+For In Class Exercises: load a .R File or .Rmd file. Load tidyverse, mpg and diamonds dataset and work along
 
 
-## ggplot
+## ggplot 
 
 `ggplot()` creates a coordinate system that you can add layers to. The first argument of `ggplot()` is the dataset to use in the graph.
 
@@ -477,7 +479,8 @@ The stacking is performed automatically by the __position adjustment__ specified
 For scatterplots, 
  -`position = "jitter"` adds a small amount of random noise to each point. 
  
- ## In class Exercsises
+
+## In Class Exercsises
   - Fill cut by clarity and use position arguments
 
 
@@ -514,7 +517,7 @@ Coordinate systems are probably the most complicated part of ggplot2. The defaul
 if you want horizontal boxplots. It's also useful for long labels: it's
 hard to get them to fit without overlapping on the x-axis.
     
-```{r eval = F}
+```{r eval=FALSE, include=FALSE}
 ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
   geom_boxplot()
 ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
@@ -537,7 +540,7 @@ ncol = 2)
 `coord_quickmap()` sets the aspect ratio correctly for maps. This is very
 important if you're plotting spatial data with ggplot2.
 
-```{r eval = F}
+```{r eval=FALSE, include=FALSE}
 nz <- map_data("nz")
 
 ggplot(nz, aes(long, lat, group = group)) +
@@ -547,6 +550,7 @@ ggplot(nz, aes(long, lat, group = group)) +
   geom_polygon(fill = "white", colour = "black") +
   coord_quickmap()
 ```
+
 
 ```{r echo = F}
 nz <- map_data("nz")
@@ -566,10 +570,10 @@ ncol = 2)
 `coord_polar()` uses polar coordinates. Polar coordinates reveal an 
 interesting connection between a bar chart and a Coxcomb chart.
     
-```{r eval = F, fig.asp = 1}
+```{r eval=FALSE, include=FALSE}
 bar <- ggplot(data = diamonds) + 
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut,fill = cut),
     show.legend = FALSE,
     width = 1, 
   ) + 
@@ -580,10 +584,10 @@ bar + coord_flip()
 bar + coord_polar()
 ```
 
-```{r eval = F, fig.asp = 1}
+```{r echo=FALSE}
 bar <- ggplot(data = diamonds) + 
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut, fill = cut),
     show.legend = FALSE,
     width = 1
   ) + 
@@ -592,7 +596,7 @@ bar <- ggplot(data = diamonds) +
 
 ggarrange(
 bar + coord_flip(),
-bar + coord_polar("y"),
+bar + coord_polar(),
 ncol = 2)
 ```
 
@@ -622,9 +626,7 @@ ncol = 2)
 
 # The layered grammar of graphics
 
-##
-
-In the previous sections, you learned much more than how to make scatterplots, bar charts, and boxplots. You learned a foundation that you can use to make _any_ type of plot with ggplot2. To see this, let's add position adjustments, stats, coordinate systems, and faceting to our code template:
+## Code template
 
 ```
 ggplot(data = <DATA>) + 
@@ -637,41 +639,35 @@ ggplot(data = <DATA>) +
   <FACET_FUNCTION>
 ```
 
-##
+## Other tools
 
-Our new template takes seven parameters, the bracketed words that appear in the template. In practice, you rarely need to supply all seven parameters to make a graph because ggplot2 will provide useful defaults for everything except the data, the mappings, and the geom function.
+ - Plotly
 
-The seven parameters in the template compose the grammar of graphics, a formal system for building plots. The grammar of graphics is based on the insight that you can uniquely describe _any_ plot as a combination of a dataset, a geom, a set of mappings, a stat, a position adjustment, a coordinate system, and a faceting scheme. 
+```{r echo=F, message=FALSE, warning=FALSE}
 
-##
+d <- diamonds[sample(nrow(diamonds), 1000), ]
 
-To see how this works, consider how you could build a basic plot from scratch: you could start with a dataset and then transform it into the information that you want to display (with a stat).
+p <- plot_ly(
+  d, x = ~carat, y = ~price,
+  # Hover text:
+  text = ~paste("Price: ", price, '$<br>Cut:', cut),
+  color = ~carat, size = ~carat
+)
+p
 
-```{r, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("http://r4ds.had.co.nz/images/visualization-grammar-1.png")
 ```
 
-##
 
-Next, you could choose a geometric object to represent each observation in the transformed data. You could then use the aesthetic properties of the geoms to represent variables in the data. You would map the values of each variable to the levels of an aesthetic.
+## Which chart fits best?
 
-```{r, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("http://r4ds.had.co.nz/images/visualization-grammar-2.png")
+ - GGplot cheatsheets are useful
+ - https://www.data-to-viz.com/
+ 
+```{r echo=FALSE, out.width="75%"}
+include_graphics("newtemplate/dataviz.png")
+
+
 ```
-
-##
-
-You'd then select a coordinate system to place the geoms into. You'd use the location of the objects (which is itself an aesthetic property) to display the values of the x and y variables. At that point, you would have a complete graph, but you could further adjust the positions of the geoms within the coordinate system (a position adjustment) or split the graph into subplots (faceting). You could also extend the plot by adding one or more additional layers, where each additional layer uses a dataset, a geom, a set of mappings, a stat, and a position adjustment.
-
-```{r, echo = FALSE, out.width = "100%"}
-knitr::include_graphics("http://r4ds.had.co.nz/images/visualization-grammar-3.png")
-```
-
-##
-
-You could use this method to build _any_ plot that you imagine. In other words, you can use the code template to build hundreds of thousands of unique plots.
-
- - Add plotly to this
- - Data-to-viz to this
- - r color brewer to this
- - gganimate to this
+ 
+ 
+# GO CRAZY!!!! | gganimate, rcolorbrewer
